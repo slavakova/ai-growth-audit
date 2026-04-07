@@ -11,7 +11,7 @@ def _execute_stage(run_id: int, stage_name: str) -> None:
     db = SessionLocal()
     try:
         run_service = RunService(db)
-        pipeline_service = PipelineService()
+        pipeline_service = PipelineService(db)
         run_service.set_stage(run_id, stage_name, RunStatus.RUNNING)
         getattr(pipeline_service, stage_name)(run_id)
     finally:

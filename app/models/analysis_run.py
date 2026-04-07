@@ -17,6 +17,7 @@ class AnalysisRun(Base, TimestampMixin):
     )
     current_stage: Mapped[str | None] = mapped_column(String(64), nullable=True)
     error_message: Mapped[str | None] = mapped_column(String(1024), nullable=True)
+    selected_page_url: Mapped[str | None] = mapped_column(String(2048), nullable=True)
 
     project = relationship("Project", back_populates="runs")
     site_pages = relationship("SitePage", back_populates="run", cascade="all,delete-orphan")

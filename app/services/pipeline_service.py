@@ -1,44 +1,54 @@
-from app.models.enums import PipelineStage
+from sqlalchemy.orm import Session
+
+from app.services.crawler.site_crawler_service import SiteCrawlerService
+from app.services.run_service import RunService
 
 
 class PipelineService:
-    """Scaffold service for future real integrations.
+    """Scaffold service for future real integrations."""
 
-    TODO: connect real crawler, SERP source, and LLM generation providers.
-    """
+    def __init__(self, db: Session):
+        self.db = db
+        self.run_service = RunService(db)
 
     def intake(self, run_id: int) -> dict:
-        return {"run_id": run_id, "stage": PipelineStage.INTAKE, "note": "[MOCK] Intake complete"}
+        return {"run_id": run_id, "stage": "intake", "note": "[MOCK] Intake complete"}
 
     def crawl(self, run_id: int) -> dict:
-        return {"run_id": run_id, "stage": PipelineStage.CRAWL, "note": "[MOCK] Site crawl"}
+        run = self.run_service.get_run(run_id)
+        if run is None:
+            return {"run_id": run_id, "stage": "crawl", "error": "run not found"}
+
+        crawler = SiteCrawlerService(self.db)
+        page = crawler.crawl_run_primary_page(run)
+        return {"run_id": run_id, "stage": "crawl", "saved_page_id": page.id if page else None}
 
     def page_understanding(self, run_id: int) -> dict:
-        return {"run_id": run_id, "stage": PipelineStage.PAGE_UNDERSTANDING, "note": "[MOCK] Page understanding"}
+        return {"run_id": run_id, "stage": "page_understanding", "note": "[MOCK] Page understanding"}
 
     def query_builder(self, run_id: int) -> dict:
-        return {"run_id": run_id, "stage": PipelineStage.QUERY_BUILDER, "note": "[MOCK] Query list"}
+        return {"run_id": run_id, "stage": "query_builder", "note": "[MOCK] Query list"}
 
     def serp_collection(self, run_id: int) -> dict:
-        return {"run_id": run_id, "stage": PipelineStage.SERP_COLLECTION, "note": "[MOCK] SERP snapshots"}
+        return {"run_id": run_id, "stage": "serp_collection", "note": "[MOCK] SERP snapshots"}
 
     def competitor_selection(self, run_id: int) -> dict:
-        return {"run_id": run_id, "stage": PipelineStage.COMPETITOR_SELECTION, "note": "[MOCK] Competitor selection"}
+        return {"run_id": run_id, "stage": "competitor_selection", "note": "[MOCK] Competitor selection"}
 
     def competitor_crawl(self, run_id: int) -> dict:
-        return {"run_id": run_id, "stage": PipelineStage.COMPETITOR_CRAWL, "note": "[MOCK] Competitor crawl"}
+        return {"run_id": run_id, "stage": "competitor_crawl", "note": "[MOCK] Competitor crawl"}
 
     def reputation_collection(self, run_id: int) -> dict:
-        return {"run_id": run_id, "stage": PipelineStage.REPUTATION_COLLECTION, "note": "[MOCK] Reputation data"}
+        return {"run_id": run_id, "stage": "reputation_collection", "note": "[MOCK] Reputation data"}
 
     def comparison(self, run_id: int) -> dict:
-        return {"run_id": run_id, "stage": PipelineStage.COMPARISON, "note": "[MOCK] Comparison metrics"}
+        return {"run_id": run_id, "stage": "comparison", "note": "[MOCK] Comparison metrics"}
 
     def recommendations(self, run_id: int) -> dict:
-        return {"run_id": run_id, "stage": PipelineStage.RECOMMENDATIONS, "note": "[MOCK] Recommendations"}
+        return {"run_id": run_id, "stage": "recommendations", "note": "[MOCK] Recommendations"}
 
     def generation(self, run_id: int) -> dict:
-        return {"run_id": run_id, "stage": PipelineStage.GENERATION, "note": "[MOCK] Generated assets"}
+        return {"run_id": run_id, "stage": "generation", "note": "[MOCK] Generated assets"}
 
     def finalize(self, run_id: int) -> dict:
-        return {"run_id": run_id, "stage": PipelineStage.FINALIZE, "note": "[MOCK] Finalized"}
+        return {"run_id": run_id, "stage": "finalize", "note": "[MOCK] Finalized"}

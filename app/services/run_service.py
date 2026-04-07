@@ -12,8 +12,14 @@ class RunService:
     def __init__(self, db: Session):
         self.db = db
 
-    def start_run(self, project: Project, goal: AnalysisGoal) -> AnalysisRun:
-        run = AnalysisRun(project_id=project.id, goal=goal, status=RunStatus.PENDING, current_stage="queued")
+    def start_run(self, project: Project, goal: AnalysisGoal, selected_page_url: str | None = None) -> AnalysisRun:
+        run = AnalysisRun(
+            project_id=project.id,
+            goal=goal,
+            status=RunStatus.PENDING,
+            current_stage="queued",
+            selected_page_url=selected_page_url,
+        )
         self.db.add(run)
         self.db.commit()
         self.db.refresh(run)

@@ -1,12 +1,13 @@
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, HttpUrl
 
 from app.models.enums import AnalysisGoal, AssetType, RunStatus
 
 
 class RunCreate(BaseModel):
     goal: AnalysisGoal
+    selected_page_url: HttpUrl | None = None
 
 
 class RunRead(BaseModel):
@@ -18,6 +19,7 @@ class RunRead(BaseModel):
     status: RunStatus
     current_stage: str | None
     error_message: str | None
+    selected_page_url: str | None
     created_at: datetime
 
 

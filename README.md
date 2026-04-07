@@ -47,6 +47,14 @@ docker compose run --rm api pytest
 - `GET /api/runs/{id}/recommendations`
 - `GET /api/runs/{id}/assets/{assetType}`
 
+
+## Site crawler v1
+
+- HTTP crawler downloads HTML for `selected_page_url` (if set) or project `website_url`.
+- Extraction includes: title, meta description, h1, full text, h2/h3, CTA buttons, phones, forms count, messengers, has_price, has_faq, has_reviews, page_type.
+- Parsed payload is stored in `site_pages` and `extracted_json`.
+- Browser automation is intentionally not used in this version.
+
 ## Architecture notes
 
 - Routers only orchestrate request/response and DI.

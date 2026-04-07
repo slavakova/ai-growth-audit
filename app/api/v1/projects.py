@@ -35,6 +35,6 @@ def analyze_project(project_id: int, payload: RunCreate, db: Session = Depends(g
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
 
-    run = RunService(db).start_run(project, payload.goal)
+    run = RunService(db).start_run(project, payload.goal, str(payload.selected_page_url) if payload.selected_page_url else None)
     launch_pipeline(run.id)
     return run
